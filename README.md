@@ -3,6 +3,7 @@ Otus02 CRUD service
 
 # Image build
 docker build --progress plain . -t humokobil/crud:v1 -f .\app\Dockerfile
+ 
 docker build --progress plain . -t humokobil/crud_migration:v1 -f .\migration\Dockerfile
 
 

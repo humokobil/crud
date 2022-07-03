@@ -1,5 +1,8 @@
-# crud
+# CRUD service
 Otus02 CRUD service
+
+# Postman collection
+ /postman_collection
 
 # image build
 docker build --progress plain . -t humokobil/crud:v1 -f .\app\Dockerfile

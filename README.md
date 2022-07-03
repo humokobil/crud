@@ -1,7 +1,7 @@
 # CRUD service
 Otus02 CRUD service
 
-# Postman collection
+# postman collection
  /postman_collection
 
 # image build

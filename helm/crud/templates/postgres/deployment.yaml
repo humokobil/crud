@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace:  {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - configMapRef:
+            name: postgres-config
+        - secretRef:
+            name: postgres-secret
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgredb
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        readinessProbe:
+          exec:
+            command: ["pg_isready"]
+            #initialDelaySeconds: 20
+            #timeoutSeconds: 5
+            #periodSeconds: 3
+            #failureThreshold: 2
+            #successThreshold: 1
+      volumes:
+      - name: postgredb
+        persistentVolumeClaim:
+          claimName: {{ .Values.pv.name }}-claim
+        

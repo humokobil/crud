@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crud-config
+  namespace:  {{ .Values.namespace }}
+  labels:
+    app: crud
+data:
+  APP_HOST: {{ .Values.crud.host }}
+  APP_PORT:  "{{ .Values.crud.pod.port }}"
+  DB_NAME: {{ .Values.postgres.name }}
+  DB_HOST: postgres
+  DB_PORT: "5432"

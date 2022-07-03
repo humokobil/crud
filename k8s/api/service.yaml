@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crud-service
+  namespace: otus-crud
+spec:
+  selector:
+    app: crud
+  ports:
+    - name: external-port
+      protocol: TCP
+      port: 8001
+      targetPort: web 
+  type: ClusterIP

@@ -1,0 +1,16 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Values.pv.name }}
+  namespace:  {{ .Values.namespace }}
+  labels:
+    type: local
+    app: postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.pv.path }}

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-deployment
+  namespace:  {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: crud
+  template:
+    metadata:
+      labels:
+        app: crud
+    spec:
+      containers:
+        - name: crud
+          image: humokobil/crud:v1
+          ports:
+            - name: web 
+              containerPort: {{ .Values.crud.pod.port }}
+          env:
+            # Define the environment variable
+            - name: DB_USER # Notice that the case is different here
+                                        # from the key name in the ConfigMap.
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret           # The ConfigMap this value comes from.
+                  key: POSTGRES_USER # The key to fetch.
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret 
+                  key: POSTGRES_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: crud-config
+            - secretRef:
+                name: postgres-secret
+       # livenessProbe:
+       #   httpGet:
+       #     path: /live
+       #     port: web
+       #   initialDelaySeconds: 3
+       #   periodSeconds: 3
+       # readinessProbe:
+       #   httpGet:
+       #     path: /health
+       #     port: web
+       #   initialDelaySeconds: 3
+       #   periodSeconds: 3

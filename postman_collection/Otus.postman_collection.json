@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "9e38df36-fc3f-47c2-9269-b7b62029858c",
+		"name": "Otus",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/api/v1/user/2",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteUser",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/api/v1/user/2",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"id\": 1,\r\n\t\"username\": \"johndoe589\",\r\n\t\"firstName\": \"Johny\",\r\n\t\"lastName\": \"English\",\r\n\t\"email\": \"bestjohn@doe.com\",\r\n\t\"phone\": \"+71002003040\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"id\": 1,\r\n\t\"username\": \"johndoe589\",\r\n\t\"firstName\": \"John\",\r\n\t\"lastName\": \"Does\",\r\n\t\"email\": \"bestjohn@doe.com\",\r\n\t\"phone\": \"+81002003041\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/api/v1/user/1",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: crud-migration-job
+  namespace: otus-crud
+spec: 
+  backoffLimit: 0
+  template:
+    metadata:
+      name: crud-migration-job-pod
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: check-db-ready
+        image: postgres:11
+        command: ["sh", "-c", "until pg_isready -U $(DB_USER) -h $(DB_HOST) -p 5432; do echo $(DB_USER), $(DB_HOST) waiting for database; sleep 2; done;"]
+        env:
+        - name: DB_USER              
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret           
+              key: POSTGRES_USER
+        envFrom:
+        - configMapRef:
+            name: crud-config
+      containers:
+      - name: crud-migration
+        image: humokobil/crud_migration:v1
+        #command: ["/bin/sh", "-c"]
+        #args:
+        #  - git clone --single-branch --branch develop https://backend-user:cdc***0fe@github.com/projectname/backend-services.git &&
+        #    ls -l backend-services/db/migrations
+        env:
+           # Define the environment variable
+          - name: DB_USER # Notice that the case is different here
+                                      # from the key name in the ConfigMap.
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret           # The ConfigMap this value comes from.
+                key: POSTGRES_USER # The key to fetch.
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret 
+                key: POSTGRES_PASSWORD
+        envFrom:
+          - configMapRef:
+              name: crud-config
+          - secretRef:
+              name: postgres-secret

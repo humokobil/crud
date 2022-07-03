@@ -1,0 +1,28 @@
+
+# Default values for crud.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: otus-crud
+
+pv:
+  name: postgres-pv
+  path: /mnt/2/data #pv host path
+  
+postgres:  
+  user: YWRtaW4=      #base64 format
+  pass: cGFzc3dvcmQ=  #base64 format
+  name: postgresdb
+
+crud:
+  pod:
+    port: 8000
+  service:
+    port: 8001
+  
+  host: 0.0.0.0
+
+
+  
+
+replicaCount: 2

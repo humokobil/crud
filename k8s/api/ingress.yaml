@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: crud-ingress
+  namespace: otus-crud
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+   # nginx.ingress.kubernetes.io/use-regex: "true"
+   # nginx.ingress.kubernetes.io/proxy-redirect-from: /
+   # nginx.ingress.kubernetes.io/proxy-redirect-to: /
+spec:
+  rules:
+  - host: arch.homework
+    http:
+      paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: crud-service
+              port:
+                number: 8001

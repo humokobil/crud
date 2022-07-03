@@ -22,5 +22,5 @@ docker build --progress plain . -t humokobil/crud_migration:v1 -f .\migration\Do
  -f ./k8s/api/ingress.yaml
 
 
- #helm chart - находится в директории helm
- helm install app crud
+ #helm chart
+ helm install app helm/crud

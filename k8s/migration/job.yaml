@@ -12,7 +12,7 @@ spec:
       restartPolicy: Never
       initContainers:
       - name: check-db-ready
-        image: postgres:11
+        image: postgres:14
         command: ["sh", "-c", "until pg_isready -U $(DB_USER) -h $(DB_HOST) -p 5432; do echo $(DB_USER), $(DB_HOST) waiting for database; sleep 2; done;"]
         env:
         - name: DB_USER              

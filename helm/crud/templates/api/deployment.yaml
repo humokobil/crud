@@ -12,7 +12,12 @@ spec:
     metadata:
       labels:
         app: crud
+      annotations:
+        #prometheus.io/path: /metrics
+        #prometheus.io/port: "{{ .Values.crud.pod.port }}"
+        prometheus.io/scrape: "true"
     spec:
+     
       containers:
         - name: crud
           image: humokobil/crud:v1

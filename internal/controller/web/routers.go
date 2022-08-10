@@ -6,6 +6,7 @@ import (
 	"otus/crud/v1/internal/entity"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 type Route struct {
@@ -22,16 +23,47 @@ type IHandler interface {
 	DeleteUser(w http.ResponseWriter, r *http.Request) 
 	FindUserById(w http.ResponseWriter, r *http.Request)
 	UpdateUser(w http.ResponseWriter, r *http.Request)
+
 	GetRoutes() *mux.Router
+	GetPromCollectors() []prometheus.Collector
 }
 
 type handler struct {
 	usecase *entity.IUsecase
+	reqCounter *prometheus.CounterVec
+	reqDuration *prometheus.HistogramVec
 }
 
 func New(usecase *entity.IUsecase) IHandler {
-	return &handler{usecase: usecase}
+	h := &handler{usecase: usecase}
+	h.initMetrics()
+	return h
 }
+
+func (h *handler) initMetrics() {
+	h.reqCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "http_request_count",
+		Help: "Number of http requests",
+	},
+	[]string{"status", "method"})
+
+	h.reqDuration = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			//Namespace:   "otus-crud",
+			//Subsystem:   "otus_subsystem",
+			Name:        "http_request_duration_histogram_seconds",
+			Help:        "Request time duration.",
+			Buckets:      []float64{.5, .95, .99},//prometheus.DefBuckets,
+			//ConstLabels: []string{"constLabels"},
+		},
+		[]string{"method"},
+	)
+}
+
+func (h *handler) GetPromCollectors() []prometheus.Collector {
+	return []prometheus.Collector{h.reqCounter, h.reqDuration}
+}
+
 func (h *handler) GetRoutes() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	routes := h.getRoutes()

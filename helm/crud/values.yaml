@@ -7,12 +7,16 @@ namespace: otus-crud
 
 pv:
   name: postgres-pv
-  path: /mnt/2/data #pv host path
+  path: /mnt/3/data #pv host path
+
+pv_dockerd:
+  name: postgres-dockerd-pv
+  path: /mnt/3/data-dockerd #pv host path
   
 postgres:  
   user: YWRtaW4=      #base64 format
   pass: cGFzc3dvcmQ=  #base64 format
-  name: postgresdb
+  name: postgres
 
 crud:
   pod:
@@ -22,7 +26,15 @@ crud:
   
   host: 0.0.0.0
 
+metrics:
+  serviceMonitor: 
+    enabled: true
 
-  
+prom:
+  namespace: monitoring
 
-replicaCount: 2
+ingress:
+  namespace: ingress-nginx
+  port: 9113
+
+replicaCount: 1

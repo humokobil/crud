@@ -1,16 +1,14 @@
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Values.pv.name }}
+  name: {{ .Values.pv_dockerd.name }}-claim
   namespace:  {{ .Values.namespace }}
   labels:
-    type: local
     app: postgres
 spec:
   storageClassName: manual
-  capacity:
-    storage: 5Gi
   accessModes:
     - ReadWriteMany
-  hostPath:
-    path: {{ .Values.pv.path }}
+  resources:
+    requests:
+      storage: 5Gi

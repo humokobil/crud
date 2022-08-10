@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: crud-monitor
+  namespace: monitoring
+  labels:
+    app: crud
+spec:
+  jobLabel: crud-monitor-job
+  namespaceSelector:
+    matchNames:
+    - "otus-crud"
+  selector:
+    matchLabels:
+      app: crud-service
+  endpoints:
+  - interval: 15s
+    port: "8001"
+    path: /metrics

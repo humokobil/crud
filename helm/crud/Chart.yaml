@@ -1,6 +1,7 @@
 apiVersion: v2
 name: crud
-#namespace: {{ .Values.namespace }}
+label: Otus Kobil Huumo CRUD service
+namespace: otus-crud
 description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.

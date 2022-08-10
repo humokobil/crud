@@ -1,7 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ .Values.pv.name }}
+  name: {{ .Values.pv_dockerd.name }}
   namespace:  {{ .Values.namespace }}
   labels:
     type: local
@@ -13,4 +13,4 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: {{ .Values.pv.path }}
+    path: {{ .Values.pv_dockerd.path }}

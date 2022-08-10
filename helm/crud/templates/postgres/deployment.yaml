@@ -14,36 +14,79 @@ spec:
       labels:
         app: postgres
     spec:
+      initContainers:
+        - name: enable-pg-stat
+          image: postgres:14
+          #workdir: /docker-entrypoint-initdb.d
+          #command: [ "echo -c", "'#!/usr/bin/env bash \n echo \"shared_preload_libraries = \'pg_stat_statements\'\" >> $PGDATA/postgresql.conf \n echo \"pg_stat_statements.max = 10000\" >> $PGDATA/postgresql.conf \n echo \"pg_stat_statements.track = all\" >> $PGDATA/postgresql.conf\' >>/docker-entrypoint-initdb.d/enable-pg-stat.sh"]
+          #command: ["echo", "Hello world!!!"]
+          #echo 'Hello' >> /docker-entrypoint-initdb.d/test.sh
+          command:
+            - /bin/sh 
+            - -c 
+            - |-
+              echo "shared_preload_libraries='pg_stat_statements'" >> $PGDATA/postgresql.conf 
+              echo "pg_stat_statements.max = 10000" >> $PGDATA/postgresql.conf 
+              echo "pg_stat_statements.track = all" >> $PGDATA/postgresql.conf
+              echo "PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname=$POSTGRES_DB <<EOF
+              CREATE EXTENSION IF NOT EXISTS pg_stat_statements;;
+              select * FROM pg_extension;
+              EOF" > /docker-entrypoint-initdb.d/enable-pg-stat.sh
+            - echo "Hello world"
+          envFrom:
+          - configMapRef:
+              name: postgres-config
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_USER  
+          volumeMounts:
+            - mountPath: /docker-entrypoint-initdb.d
+              name: initdb
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
       containers:
-      - name: postgres
-        image: postgres:latest
-        imagePullPolicy: "IfNotPresent"
-        ports:
-        - containerPort: 5432
-        envFrom:
-        - configMapRef:
-            name: postgres-config
-        - secretRef:
-            name: postgres-secret
-        volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: postgredb
-        env:
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
+        - name: postgres
+          image: postgres:14
+          imagePullPolicy: "IfNotPresent"
+          #args: 
+          # - pg_resetwal $PGDATA
+          #securityContext:
+          #  runAsUser: 999
+          ports:
+          - containerPort: 5432
+          envFrom:
+          - configMapRef:
+              name: postgres-config
+          - secretRef:
               name: postgres-secret
-              key: POSTGRES_USER
-        readinessProbe:
-          exec:
-            command: ["pg_isready"]
-            #initialDelaySeconds: 20
-            #timeoutSeconds: 5
-            #periodSeconds: 3
-            #failureThreshold: 2
-            #successThreshold: 1
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgredb
+          - mountPath: /docker-entrypoint-initdb.d
+            name: initdb
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_USER
+          readinessProbe:
+            exec:
+              command: ["pg_isready"]
+              #initialDelaySeconds: 20
+              #timeoutSeconds: 5
+              #periodSeconds: 3
+              #failureThreshold: 2
+              #successThreshold: 1
       volumes:
       - name: postgredb
         persistentVolumeClaim:
           claimName: {{ .Values.pv.name }}-claim
-        
+      - name: initdb
+        persistentVolumeClaim:
+          claimName: {{ .Values.pv_dockerd.name }}-claim
+
+          

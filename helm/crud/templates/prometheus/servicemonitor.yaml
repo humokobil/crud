@@ -1,0 +1,20 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: crud-monitor
+  namespace: {{ .Values.prom.namespace }}
+  labels:
+    app: crud
+spec:
+  jobLabel: crud-monitor-job
+  namespaceSelector:
+    any: true
+  selector: {}
+  endpoints:
+    - interval: 5s
+      #port: load-balancer-port
+     # path: /metrics
+{{- end }}
+
+

@@ -13,20 +13,19 @@ import (
 func main() {
 	configPath := flag.String("conf-file", "./config.yaml", "config path")
 	flag.Parse()
-	fmt.Println("Try to open config from:", *configPath)
-	viper.SetConfigFile(*configPath)
-	viper.BindEnv("db.name", "DB_NAME")
-	viper.BindEnv("db.host", "DB_HOST")
-	viper.BindEnv("db.port", "DB_PORT")
-	viper.BindEnv("db.user", "DB_USER")
-	viper.BindEnv("db.pass", "DB_PASS")
 
-	err := viper.ReadInConfig()
+	fmt.Println("Try to open config from:", *configPath)
+
+	//configs
+	v := viper.New()
+	err := config.BindToEnv(v)
 	if err != nil {
 		panic(err)
 	}
-	var config config.Config
-	viper.Unmarshal(&config)
+	config, err:= config.Read(v, *configPath)
+	if err != nil {
+		panic(err)	
+	}
 	
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s database=%s sslmode=disable",
 	config.PostgresDbParams.Host, config.PostgresDbParams.Port,
